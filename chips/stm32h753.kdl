@@ -1,0 +1,83 @@
+// app/demo-stm32h7-nucleo
+// name = "demo-stm32h753-nucleo"
+// target = "thumbv7em-none-eabihf"
+// board = "nucleo-h753zi"
+// chip = "../../chips/stm32h7"
+// memory = "memory-large.toml"
+// stacksize = 896
+
+chip STM32H753
+target-triple thumbv7em-none-eabihf
+vector-table-size 0xC0
+probe-rs-name STM32H753
+
+//compatible {
+//    - STM32L412KB
+//    - STM32L412xB
+//    - STM32L412
+//    - STM32L4
+//    - arm-cortex-m4f
+//    - arm-cortex-m4
+//}
+
+// hubris/chips.stm32h7/memory.toml
+memory {
+    region vectors {
+        base 0x0800_0000
+        size 0x1E4 // enlarged to accommodate header
+        read
+    }
+    region flash {
+        base 0x0800_0000
+        size 0x100000
+        read
+        execute
+    }
+    region ram {
+        base 0x2000_0000
+        size 0x20000
+        read
+        write
+    }
+    region usbram {
+        base 0x4000_6C00
+        size 1024
+        read
+        write
+    }
+}
+
+peripheral tim2 {
+    base 0x4000_0000
+    size 0x400
+    irq irq 28
+}
+
+peripheral crs {
+    base 0x4000_6000
+    size 0x400
+}
+
+peripheral usbfs_and_sram {
+    base 0x4000_6800
+    size 0x800
+    irq irq 67
+}
+
+peripheral pwr {
+    base 0x4000_7000
+    size 0x400
+}
+
+peripheral rcc {
+    base 0x58024400
+    size 0x400
+}
+
+// This includes ports A-H. Note that ports E/F/G are not implemented on the
+// STM32L4, but are included in this region anyway. This has proven to be fine
+// in practice; we won't try to access them, and if we did it'd likely trap.
+peripheral gpios {
+    base 0x4800_0000
+    size 0x2000
+}
