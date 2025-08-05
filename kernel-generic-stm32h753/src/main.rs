@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+mod startup;
+
 use drv_stm32h7_startup::{system_init, ClockConfig};
 use stm32_metapac::{
     self as device,

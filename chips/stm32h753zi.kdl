@@ -1,0 +1,113 @@
+chip STM32H753ZI
+target-triple thumbv7em-none-eabihf
+probe-rs-name STM32H753ZI
+
+compatible {
+    - STM32H753ZI
+    - STM32H753
+    - STM32H7
+    - arm-cortex-m7
+}
+
+// TODO
+// L412 lacks I2C4 and thus has a slightly smaller vector table than some other
+// entries in the series.
+vector-table-size 0x274
+
+memory {
+    region vectors { // TODO
+        base 0x0800_0000
+        size 0x2CC // enlarged to accommodate header
+        read
+    }
+    region flash {
+        base 0x0800_0000
+        size 0x100000// 1048576
+        read
+        execute
+    }
+    region ram {
+        base 0x2000_0000
+        size 0x20000 // 131072
+        read
+        write
+    }
+    sram1_mac {
+        // Network buffers are placed in sram1, which is directly accessible by the
+        // Ethernet MAC.  We limit this use of sram1 to 64 KiB, and preserve the
+        // remainder to be used for disjoint purposes (e.g., as an external region).
+        address 0x30000000
+        size 0x10000
+        read
+        write
+        dma
+    }
+    sram1 {
+        address 0x30010000
+        size 0x10000
+        read
+        write
+        dma
+    }
+    sram2 {
+        address 0x30020000
+        size 0x20000
+        read
+        write
+        dma
+    }
+    sram3 {
+        address 0x30040000
+        size 0x8000
+        read
+        write
+        dma
+    }
+    sram4 {
+        address 0x38000000
+        size 0x10000
+        read
+        write
+        dma
+    }
+    bank2 {
+        address 0x08100000
+        size 0x100000
+        read
+        write
+        dma
+    }
+}
+
+//////////
+// TODO
+// peripheral tim2 {
+//     base 0x4000_0000
+//     size 0x400
+// }
+
+// peripheral crs {
+//     base 0x4000_6000
+//     size 0x400
+// }
+
+// peripheral pwr {
+//     base 0x4602_0800
+//     size 0x400
+// }
+
+// peripheral rcc {
+//     base 0x4602_0C00
+//     size 0x400
+// }
+
+// peripheral gpios {
+//     base 0x4202_0000
+//     size 0x2800
+// }
+
+// peripheral usb_otg_fs {
+//     base 0x4204_0000
+//     size 0x8_0000
+//     irq irq 73
+// }
