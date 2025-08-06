@@ -9,20 +9,17 @@ compatible {
     - arm-cortex-m7
 }
 
-// TODO
-// L412 lacks I2C4 and thus has a slightly smaller vector table than some other
-// entries in the series.
-vector-table-size 0x274
+vector-table-size 0x294
 
 memory {
-    region vectors { // TODO
+    region vectors {
         base 0x0800_0000
-        size 0x2CC // enlarged to accommodate header
+        size 0x2EC // needs to be 0x58(?) larger to accommodate header
         read
     }
     region flash {
-        base 0x0800_0000
-        size 0x100000// 1048576
+        base 0x0800_02ec
+        size 0x0ffd14 // 1024kiB - 0x2EC
         read
         execute
     }
@@ -32,46 +29,46 @@ memory {
         read
         write
     }
-    sram1_mac {
+    region sram1_mac {
         // Network buffers are placed in sram1, which is directly accessible by the
         // Ethernet MAC.  We limit this use of sram1 to 64 KiB, and preserve the
         // remainder to be used for disjoint purposes (e.g., as an external region).
-        address 0x30000000
+        base 0x30000000
         size 0x10000
         read
         write
         dma
     }
-    sram1 {
-        address 0x30010000
+    region sram1 {
+        base 0x30010000
         size 0x10000
         read
         write
         dma
     }
-    sram2 {
-        address 0x30020000
+    region sram2 {
+        base 0x30020000
         size 0x20000
         read
         write
         dma
     }
-    sram3 {
-        address 0x30040000
+    region sram3 {
+        base 0x30040000
         size 0x8000
         read
         write
         dma
     }
-    sram4 {
-        address 0x38000000
+    region sram4 {
+        base 0x38000000
         size 0x10000
         read
         write
         dma
     }
-    bank2 {
-        address 0x08100000
+    region bank2 {
+        base 0x08100000
         size 0x100000
         read
         write
@@ -79,35 +76,214 @@ memory {
     }
 }
 
-//////////
-// TODO
-// peripheral tim2 {
-//     base 0x4000_0000
-//     size 0x400
+peripheral rcc {
+    base 0x58024400
+    size 1024
+}
+
+peripheral gpios {
+    base 0x58020000
+    size 0x4000
+}
+
+peripheral spi1 {
+    base 0x40013000
+    size 1024
+    irq irq 35 
+}
+
+peripheral spi2 {
+    base 0x40003800
+    size 1024
+    irq irq 36 
+}
+
+peripheral spi3 {
+    base 0x40003c00
+    size 1024
+    irq irq 51 
+}
+
+peripheral spi4 {
+    base 0x40013400
+    size 1024
+    irq irq 84 
+}
+
+peripheral spi5 {
+    base 0x40015000
+    size 1024
+    irq irq 85 
+}
+
+peripheral spi6 {
+    base 0x58001400
+    size 1024
+    irq irq 86 
+}
+
+peripheral syscfg {
+    base 0x58000400
+    size 1024
+}
+
+peripheral exti {
+    base 0x58000000
+    size 1024
+    irq exti0 6
+    irq exti1 7
+    irq exti2 8
+    irq exti3 9
+    irq exti4 10
+    irq exti9_5 23
+    irq exti15_10 40
+}
+
+peripheral usart1 {
+    base 0x40011000
+    size 1024
+    irq irq 37 
+}
+
+peripheral usart2 {
+    base 0x40004400
+    size 1024
+    irq irq 38 
+}
+
+peripheral usart3 {
+    base 0x40004800
+    size 1024
+    irq irq 39 
+}
+
+peripheral uart4 {
+    base 0x40004c00
+    size 1024
+    irq irq 52 
+}
+
+peripheral uart5 {
+    base 0x40005000
+    size 1024
+    irq irq 53 
+}
+
+peripheral usart6 {
+    base 0x40011400
+    size 1024
+    irq irq 71 
+}
+
+peripheral uart7 {
+    base 0x40007800
+    size 1024
+    irq irq 82 
+}
+
+peripheral uart8 {
+    base 0x40007c00
+    size 1024
+    irq irq 83 
+}
+
+peripheral i2c1 {
+    base 0x40005400
+    size 1024
+    irq event 31
+    irq error 32 
+}
+
+peripheral i2c2 {
+    base 0x40005800
+    size 1024
+    irq event 33
+    irq error 34 
+}
+
+peripheral i2c3 {
+    base 0x40005c00
+    size 1024
+    irq event 72
+    irq error 73 
+}
+
+peripheral i2c4 {
+    base 0x58001c00
+    size 1024
+    irq event 95
+    irq error 96 
+}
+
+peripheral quadspi {
+    base 0x52005000
+    size 4096
+    irq irq 92 
+}
+
+peripheral eth {
+    base 0x40028000
+    size 0x2000
+    irq irq 61 
+}
+
+peripheral hash {
+    base 0x48021400
+    size 4096
+    irq irq 80 
+}
+
+peripheral system_flash {
+    base 0x1FF00000
+    size 0x20000
+}
+
+peripheral rng {
+    base 0x48021800
+    size 4096
+}
+
+peripheral flash_controller {
+    base 0x52002000
+    size 0x2000
+    irq irq 4 
+}
+
+peripheral tim16 {
+    base 0x40014400
+    size 0x400
+    irq irq 117 
+}
+
+peripheral dbgmcu {
+    base 0x5C001000
+    size 128 // 96 bytes of actual data, rounding up to a power of two
+}
+
+// peripheral cryp {
+//     base 0x48021000
+//     size 4096
 // }
 
-// peripheral crs {
-//     base 0x4000_6000
-//     size 0x400
-// }
+// Control registers for the memory controller, _not_ the memory itself.
+peripheral fmc {
+    base 0x52004000
+    size 0x1000
+}
 
-// peripheral pwr {
-//     base 0x4602_0800
-//     size 0x400
-// }
-
-// peripheral rcc {
-//     base 0x4602_0C00
-//     size 0x400
-// }
-
-// peripheral gpios {
-//     base 0x4202_0000
-//     size 0x2800
-// }
-
-// peripheral usb_otg_fs {
-//     base 0x4204_0000
-//     size 0x8_0000
-//     irq irq 73
-// }
+// NOTE: this defines the chunk of memory used for memory-mapped peripherals,
+// like we do for certain FPGAs.  You should not use it directly; instead, use an
+// `fmc` configuration block in your manifest to generate fine-grained memory
+// regions for each memory-mapped peripheral, based on the FPGA's top-level
+// peripheral map.
+//
+// This is also NOT the right way to use FMC-attached devices as RAM! For that
+// you probably want an extern-region instead. Why, you ask? Because this is a
+// peripheral mapping, and will set up this section of the address space as
+// bypassing the cache, not coalescing stores, and so forth. This is what you
+// want for memory mapped registers; it is _not_ what you want for RAM, at least
+// if you want performance to be halfway reasonable.
+peripheral fmc_nor_psram_bank_1 {
+    base 0x60000000
+    size 0x10000000
+}

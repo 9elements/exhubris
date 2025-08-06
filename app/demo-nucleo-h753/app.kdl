@@ -7,7 +7,7 @@ app demo-nucleo-h753
 // Currently the board information is inlined. It would be nice to refer to an
 // external file, like we already do for chip definitions.
 board nucleo-h753zi {
-    chip "proj:chips/stm32h753zi_ns.kdl"
+    chip "proj:chips/stm32h753zi.kdl"
 }
 
 // Instructions for building the kernel.

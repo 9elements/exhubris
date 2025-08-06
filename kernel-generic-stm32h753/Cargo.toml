@@ -8,8 +8,7 @@ edition = "2021"
 [dependencies]
 cortex-m = { version = "0.7", features = ["inline-asm"] }
 cortex-m-rt = "0.7.5"
-stm32-metapac = {version = "16.0.0", features = ["rt", "stm32h753zi"]}
-# drv-stm32h7-startup = { git = "https://github.com/cbiffle/hubris-fork.git", package = "drv-stm32h7-startup"}
+stm32-metapac = { version = "16.0.0", features = ["rt", "stm32h753zi"]}
 
 [dependencies.hubris-kern]
 package = "kern"
