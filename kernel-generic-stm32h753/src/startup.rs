@@ -24,7 +24,7 @@ unsafe fn system_pre_init() {
     // Synthesize a pointer using a const fn (which won't hit RAM) and then
     // convert it to a reference. We can have a reference to PWR because it's
     // hardware, and is thus not uninitialized.
-    let pwr = &*device::PWR::ptr();
+    let pwr = device::PWR.as_ptr();
     // Poke CR3 to enable the LDO and prevent further writes.
     pwr.cr3.modify(|_, w| w.ldoen().set_bit());
 
@@ -34,7 +34,7 @@ unsafe fn system_pre_init() {
     }
 
     // Turn on the internal RAMs.
-    let rcc = &*device::RCC::ptr();
+    let rcc = device::RCC.as_ptr();
     rcc.ahb2enr.modify(|_, w| {
         w.sram1en()
             .set_bit()
@@ -52,18 +52,18 @@ unsafe fn system_pre_init() {
 pub struct ClockConfig {
     pub source: ClockSource,
     pub divm: u8,
-    pub vcosel: device::rcc::pllcfgr::PLL1VCOSEL_A,
-    pub pllrange: device::rcc::pllcfgr::PLL1RGE_A,
+    pub vcosel: device::rcc::vals::Pllvcosel,
+    pub pllrange: device::rcc::vals::Pllrge,
     pub divn: u16,
-    pub divp: device::rcc::pll1divr::DIVP1_A,
+    pub divp: device::rcc::vals::Plldiv,
     pub divq: u8,
     pub divr: u8,
-    pub cpu_div: device::rcc::d1cfgr::D1CPRE_A,
-    pub ahb_div: device::rcc::d1cfgr::HPRE_A,
-    pub apb1_div: device::rcc::d2cfgr::D2PPRE1_A,
-    pub apb2_div: device::rcc::d2cfgr::D2PPRE2_A,
-    pub apb3_div: device::rcc::d1cfgr::D1PPRE_A,
-    pub apb4_div: device::rcc::d3cfgr::D3PPRE_A,
+    pub cpu_div: device::rcc::vals::Hpre,
+    pub ahb_div: device::rcc::vals::Hpre,
+    pub apb1_div: device::rcc::vals::Ppre,
+    pub apb2_div: device::rcc::vals::Ppre,
+    pub apb3_div: device::rcc::vals::Ppre,
+    pub apb4_div: device::rcc::vals::Ppre,
     pub flash_latency: u8,
     pub flash_write_delay: u8,
 }
@@ -91,7 +91,7 @@ pub fn system_init_custom(
     //
     // We are running at 64MHz on the HSI oscillator at voltage scale VOS3.
 
-    #[cfg(any(feature = "h743", feature = "h753"))]
+    // #[cfg(any(feature = "h743", feature = "h753"))]
     {
         // Workaround for erratum 2.2.9 "Reading from AXI SRAM may lead to data
         // read corruption" - limits AXI SRAM read concurrency.
@@ -319,7 +319,7 @@ pub fn system_init_custom(
     }
 
     // set RNG clock to PLL1 clock
-    #[cfg(any(feature = "h743", feature = "h753"))]
+    // #[cfg(any(feature = "h743", feature = "h753"))]
     p.RCC.d2ccip2r.modify(|_, w| w.rngsel().pll1_q());
 
     // Hello from target speed!
