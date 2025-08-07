@@ -46,7 +46,7 @@ task ping {
     uses-task pong
     uses-task sys
     config {
-        led-pin C7
+        led-pin B0
     }
 }
 
