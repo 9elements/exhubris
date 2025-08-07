@@ -94,8 +94,8 @@ pub fn system_init_custom(mut cp: cortex_m::Peripherals, config: ClockConfig) {
     //
     // We are running at 64MHz on the HSI oscillator at voltage scale VOS3.
 
-    // TODO
-    // #[cfg(any(feature = "h743", feature = "h753"))]
+    // TODO What to do here?
+    // stm32_metapac seems to be missing AXI configuration registers
     // {
     //     // Workaround for erratum 2.2.9 "Reading from AXI SRAM may lead to data
     //     // read corruption" - limits AXI SRAM read concurrency.
@@ -310,7 +310,6 @@ pub fn system_init_custom(mut cp: cortex_m::Peripherals, config: ClockConfig) {
     }
 
     // set RNG clock to PLL1 clock
-    // #[cfg(any(feature = "h743", feature = "h753"))]
     device::RCC
         .d2ccip2r()
         .modify(|w| w.set_rngsel(stm32_metapac::rcc::vals::Rngsel::PLL1_Q));
